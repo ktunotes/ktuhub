@@ -46,14 +46,26 @@
     }
     return r.status === 204 ? null : r.json();
   }
+  function b64decodeUtf8(b64) {
+    const bin = atob(String(b64).replace(/\s/g, ''));
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
   async function loadCatalog() {
-    const ref = '?ref=' + encodeURIComponent(cfg.branch);
-    const meta = await gh('contents/data/catalog.json' + ref);
+    // Read the file's sha, then its content through the blob API, which
+    // always returns base64 JSON (works for files of any size up to 100 MB).
+    const meta = await gh('contents/data/catalog.json?ref=' + encodeURIComponent(cfg.branch));
     sha = meta.sha;
-    const raw = await fetch(`https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/data/catalog.json${ref}`,
-      { headers: { Authorization: 'Bearer ' + cfg.token, Accept: 'application/vnd.github.raw+json' } });
-    if (!raw.ok) throw new Error('Could not read data/catalog.json');
-    DB = Object.assign({ programmes: [], subjects: [], items: [] }, JSON.parse(await raw.text()));
+    const blob = await gh('git/blobs/' + meta.sha);
+    let parsed;
+    try { parsed = JSON.parse(b64decodeUtf8(blob.content)); }
+    catch (e) { throw new Error('data/catalog.json is not valid JSON. Fix or re-upload it on GitHub.'); }
+    // Refuse to continue with a file that doesn't look like the catalog:
+    // saving on top of it would wipe the site's data.
+    if (!parsed || !Array.isArray(parsed.programmes)) throw new Error('data/catalog.json has no course list. Re-upload the original data/catalog.json from the zip.');
+    DB = Object.assign({ programmes: [], subjects: [], items: [] }, parsed);
+    if (!DB.programmes.length) status('There are no courses yet. Add one in the Courses tab.', 'info');
   }
   async function saveCatalog(message) {
     DB.updated = today();

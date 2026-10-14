@@ -26,6 +26,7 @@
   }
 }
 *, *::before, *::after { box-sizing: inherit; }
+[hidden] { display: none !important; }
 html { scroll-padding-top: env(safe-area-inset-top, 0px); }
 body {
   margin: 0; background: var(--bg); color: var(--text);
