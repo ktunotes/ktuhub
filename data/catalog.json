@@ -1,0 +1,15 @@
+{
+  "updated": "2026-10-14",
+  "programmes": [
+    {"id": "mca", "code": "MCA", "name": "Master of Computer Applications", "level": "PG", "semesters": 4},
+    {"id": "mba", "code": "MBA", "name": "Master of Business Administration", "level": "PG", "semesters": 4},
+    {"id": "bca", "code": "BCA", "name": "Bachelor of Computer Applications", "level": "UG", "semesters": 6},
+    {"id": "bba", "code": "BBA", "name": "Bachelor of Business Administration", "level": "UG", "semesters": 6},
+    {"id": "mtech", "code": "M.Tech", "name": "Master of Technology", "level": "PG", "semesters": 4},
+    {"id": "barch", "code": "B.Arch", "name": "Bachelor of Architecture", "level": "UG", "semesters": 10},
+    {"id": "bdes", "code": "B.Des", "name": "Bachelor of Design", "level": "UG", "semesters": 8},
+    {"id": "bhmct", "code": "BHMCT", "name": "Bachelor of Hotel Management and Catering Technology", "level": "UG", "semesters": 8}
+  ],
+  "subjects": [],
+  "items": []
+}
